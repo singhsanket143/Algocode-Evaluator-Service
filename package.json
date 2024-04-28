@@ -21,7 +21,6 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "@types/ioredis": "^5.0.0",
     "@typescript-eslint/eslint-plugin": "^7.7.1",
     "@typescript-eslint/parser": "^7.7.1",
     "bullmq": "^5.7.5",
@@ -29,6 +28,7 @@
     "dotenv": "^16.4.5",
     "eslint": "^8.57.0",
     "express": "^4.19.2",
-    "ioredis": "^5.4.1"
+    "ioredis": "^5.4.1",
+    "winston": "^3.13.0"
   }
 }

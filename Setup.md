@@ -1,23 +1,27 @@
 ## How to setup a new Typescript Express project
 
-1. 
+1.
+
 ```
 npm init -y
 ```
 
-2. 
+2.
+
 ```
 npm install -D typescript
 npm install concurrently
 
 ```
 
-3. 
+3.
+
 ```
 tsc --init
 ```
 
-4. 
+4.
+
 ```
 Add the following scripts in package.json
 
@@ -33,8 +37,8 @@ Add the following scripts in package.json
 
 Note: Make relevant config changes in tsconfig.json
 
-5. 
+5.
+
 ```
 npm run dev
 ```
-

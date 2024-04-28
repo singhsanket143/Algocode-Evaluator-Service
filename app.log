@@ -1,0 +1,7 @@
+2024-04-28 00:34:24 INFO: Server started at *:3000
+2024-04-28 00:34:24 INFO: Successfully added a new job
+2024-04-28 00:34:24 INFO: Sample job worker kicking
+2024-04-28 00:34:24 INFO: Handler of the job called
+2024-04-28 00:34:24 INFO: SampleJob
+2024-04-28 00:34:36 INFO: Server started at *:3000
+2024-04-28 00:34:36 INFO: Successfully added a new job
