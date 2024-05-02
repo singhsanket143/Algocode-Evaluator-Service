@@ -15,6 +15,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@bull-board/express": "^5.17.0",
     "@types/express": "^4.17.21",
     "eslint-plugin-simple-import-sort": "^12.1.0",
     "nodemon": "^3.1.0",
