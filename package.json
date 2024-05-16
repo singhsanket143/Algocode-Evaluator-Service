@@ -22,11 +22,13 @@
   },
   "dependencies": {
     "@bull-board/express": "^5.17.0",
+    "@types/dockerode": "^3.3.29",
     "@types/ioredis": "^5.0.0",
     "@typescript-eslint/eslint-plugin": "^7.7.1",
     "@typescript-eslint/parser": "^7.7.1",
     "bullmq": "^5.7.5",
     "concurrently": "^8.2.2",
+    "dockerode": "^4.0.2",
     "dotenv": "^16.4.5",
     "eslint": "^8.57.0",
     "express": "^4.19.2",
