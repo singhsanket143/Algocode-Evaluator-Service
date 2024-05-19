@@ -23,10 +23,11 @@ app.listen(serverConfig.PORT, () => {
   
   SampleWorker('SampleQueue');
 
-  const code = `x = input()
-y = input()
-print("value of x is", x)
-print("value of y is", y)
+  const code = `
+val = input()
+print("Value is: " , val)
+i=0
+while(i < 10000):\n\tprint("hello")
 `;
 
 const inputCase = `100

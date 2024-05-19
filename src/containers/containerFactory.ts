@@ -10,7 +10,13 @@ async function createContainer(imageName: string, cmdExecutable: string[]) {
         AttachStdout: true, // to enable output streams
         AttachStderr: true, // to enable error streams
         Tty: false,
-        OpenStdin: true // keep the input stream open even no interaction is there
+        OpenStdin: true, // keep the input stream open even no interaction is there
+        HostConfig: {
+            Memory : 20 * 1024 * 1024,  // 20 mb of ram
+            CpuShares: 50, 
+            PidsLimit: 4, // 4 process creation allowed (This will prevent fork bomb to happen)
+            AutoRemove: true  // remove the container automatically when it is stopped
+        }
     });
 
     return container;
