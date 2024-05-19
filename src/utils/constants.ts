@@ -5,3 +5,4 @@ export const PYTHON_IMAGE = "python:3.8-slim";
 // docker stream header will contain data about type of stream i.e. stdout/stderr
 // and the length of data
 export const DOCKER_STREAM_HEADER_SIZE = 8; // in bytes
+export const EXECUTION_TIMEOUT_SECOND = 3; // time after which our docker container should remove the container

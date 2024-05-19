@@ -1,7 +1,7 @@
 // import Docker from 'dockerode';
 
 // import { TestCases } from '../types/testCases';
-import { PYTHON_IMAGE } from '../utils/constants';
+import { EXECUTION_TIMEOUT_SECOND, PYTHON_IMAGE } from '../utils/constants';
 import createContainer from './containerFactory';
 import decodeDockerStream from './dockerHelper';
 
@@ -24,6 +24,15 @@ async function runPython(code: string, inputTestCase: string) {
     // starting / booting the corresponding docker container
     await pythonDockerContainer.start();
 
+    const timeoutHandler = setTimeout(async() => {
+        try {
+            await pythonDockerContainer.stop();
+            console.log("Execution Timed Out");
+        } catch (err) {
+            console.error("Error removing/stopping container: ",err);
+        }
+    }, EXECUTION_TIMEOUT_SECOND * 1000);
+
     console.log("Started the docker container");
 
     const loggerStream = await pythonDockerContainer.logs({
@@ -40,6 +49,7 @@ async function runPython(code: string, inputTestCase: string) {
 
     await new Promise((res) => {
         loggerStream.on('end', () => {
+            clearTimeout(timeoutHandler);
             console.log(rawLogBuffer);
             const completeBuffer = Buffer.concat(rawLogBuffer);
             const decodedStream = decodeDockerStream(completeBuffer);
