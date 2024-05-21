@@ -3,10 +3,11 @@ import express, { Express } from "express";
 
 import bullBoardAdapter from "./config/bullBoardConfig";
 import serverConfig from "./config/serverConfig";
-import runCpp from "./containers/runCpp";
+import submissionQueueProducer from "./producers/submissionQueueProducer";
 import apiRouter from "./routes";
+import { submission_queue } from "./utils/constants";
 import SampleWorker from "./workers/SampleWorker";
-
+import SubmissionWorker from "./workers/SubmissionWorker";
 
 const app: Express = express();
 
@@ -22,7 +23,9 @@ app.listen(serverConfig.PORT, () => {
   console.log(`BullBoard dashboard running on: http://localhost:${serverConfig.PORT}/ui`);
   
   SampleWorker('SampleQueue');
+  SubmissionWorker(submission_queue);
 
+  
   const userCode = `
   
     class Solution {
@@ -57,7 +60,14 @@ app.listen(serverConfig.PORT, () => {
 
 const inputCase = `10
 `;
+
+submissionQueueProducer({"1234": {
+  language: "CPP",
+  inputCase,
+  code
+}});
+
   
-  runCpp(code, inputCase);
+//   runCpp(code, inputCase);
 
 });
