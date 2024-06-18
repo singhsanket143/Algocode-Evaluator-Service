@@ -6,7 +6,7 @@ import createContainer from './containerFactory';
 import decodeDockerStream from './dockerHelper';
 import pullImage from './pullImage';
 
-
+// TODO: Migrate to strategy pattern
 async function runCpp(code: string, inputTestCase: string) {
 
     const rawLogBuffer: Buffer[] = [];
