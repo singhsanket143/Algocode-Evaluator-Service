@@ -2,24 +2,20 @@
 
 // import { TestCases } from '../types/testCases';
 import CodeExecutorStrategy, { ExecutionResponse } from '../types/CodeExecutorStrategy';
-import { PYTHON_IMAGE } from '../utils/constants';
+import { CPP_IMAGE } from '../utils/constants';
 import createContainer from './containerFactory';
 import pullImage from './pullImage';
 import fetchDecodedStream from '../utils/decodedStreamFetcher';
 
-class PythonExecutor implements CodeExecutorStrategy {
-
+class CppExecutor implements CodeExecutorStrategy {
     async execute(code: string, inputTestCase: string): Promise<ExecutionResponse> {
         const rawLogBuffer: Buffer[] = [];
 
-        await pullImage(PYTHON_IMAGE);
-
-
-        console.log("Initialising a new python docker container");
-        const runCommand = `echo '${code.replace(/'/g, `'\\"`)}' > test.py && echo '${inputTestCase.replace(/'/g, `'\\"`)}' | python3 test.py`;
+        console.log("Initialising a new cpp docker container");
+        await pullImage(CPP_IMAGE);
+        const runCommand = `echo '${code.replace(/'/g, `'\\"`)}' > main.cpp && g++ main.cpp -o main && echo '${inputTestCase.replace(/'/g, `'\\"`)}' | ./main`;
         console.log(runCommand);
-        // const pythonDockerContainer = await createContainer(PYTHON_IMAGE, ['python3', '-c', code, 'stty -echo']); 
-        const pythonDockerContainer = await createContainer(PYTHON_IMAGE, [
+        const cppDockerContainer = await createContainer(CPP_IMAGE, [
             '/bin/sh', 
             '-c',
             runCommand
@@ -27,11 +23,11 @@ class PythonExecutor implements CodeExecutorStrategy {
 
 
         // starting / booting the corresponding docker container
-        await pythonDockerContainer.start();
+        await cppDockerContainer.start();
 
         console.log("Started the docker container");
 
-        const loggerStream = await pythonDockerContainer.logs({
+        const loggerStream = await cppDockerContainer.logs({
             stdout: true,
             stderr: true,
             timestamps: false,
@@ -49,10 +45,9 @@ class PythonExecutor implements CodeExecutorStrategy {
         } catch (error) {
             return {output: error as string, status: "ERROR"}
         } finally {
-            await pythonDockerContainer.remove();
-
+            await cppDockerContainer.remove(); // remove the container when done with it
         }
-    }    
+    }
 }
 
-export default PythonExecutor;
+export default CppExecutor;

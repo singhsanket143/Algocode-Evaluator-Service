@@ -4,8 +4,8 @@
 import CodeExecutorStrategy, { ExecutionResponse } from '../types/CodeExecutorStrategy';
 import { JAVA_IMAGE } from '../utils/constants';
 import createContainer from './containerFactory';
-import decodeDockerStream from './dockerHelper';
 import pullImage from './pullImage';
+import fetchDecodedStream from '../utils/decodedStreamFetcher';
 
 class JavaExecutor implements CodeExecutorStrategy {
     async execute(code: string, inputTestCase: string): Promise<ExecutionResponse> {
@@ -41,34 +41,14 @@ class JavaExecutor implements CodeExecutorStrategy {
         });
 
         try {
-            const codeResponse : string = await this.fetchDecodedStream(loggerStream, rawLogBuffer);
+            const codeResponse : string = await fetchDecodedStream(loggerStream, rawLogBuffer);
             return {output: codeResponse, status: "COMPLETED"};
         } catch (error) {
             return {output: error as string, status: "ERROR"}
         } finally {
             await javaDockerContainer.remove();
-
         }
     }
-
-    fetchDecodedStream(loggerStream: NodeJS.ReadableStream, rawLogBuffer: Buffer[]) : Promise<string> {
-        // TODO: May be moved to the docker helper util
-        return new Promise((res, rej) => {
-            loggerStream.on('end', () => {
-                console.log(rawLogBuffer);
-                const completeBuffer = Buffer.concat(rawLogBuffer);
-                const decodedStream = decodeDockerStream(completeBuffer);
-                console.log(decodedStream);
-                console.log(decodedStream.stdout);
-                if(decodedStream.stderr) {
-                    rej(decodedStream.stderr);
-                } else {
-                    res(decodedStream.stdout);
-                }
-            });
-        })
-    }
-    
 }
   
 
