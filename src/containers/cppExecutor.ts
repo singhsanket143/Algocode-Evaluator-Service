@@ -2,24 +2,20 @@
 
 // import { TestCases } from '../types/testCases';
 import CodeExecutorStrategy, { ExecutionResponse } from '../types/CodeExecutorStrategy';
-import { JAVA_IMAGE } from '../utils/constants';
+import { CPP_IMAGE } from '../utils/constants';
 import createContainer from './containerFactory';
 import pullImage from './pullImage';
 import fetchDecodedStream from '../utils/decodedStreamFetcher';
 
-class JavaExecutor implements CodeExecutorStrategy {
-    async execute(code: string, inputTestCase: string, outputCase: string): Promise<ExecutionResponse> {
-        console.log("Java executor called");
-        console.log(code, inputTestCase, outputCase);
-
+class CppExecutor implements CodeExecutorStrategy {
+    async execute(code: string, inputTestCase: string): Promise<ExecutionResponse> {
         const rawLogBuffer: Buffer[] = [];
 
-        await pullImage(JAVA_IMAGE);
-
-        console.log("Initialising a new java docker container");
-        const runCommand = `echo '${code.replace(/'/g, `'\\"`)}' > Main.java && javac Main.java && echo '${inputTestCase.replace(/'/g, `'\\"`)}' | java Main`;
+        console.log("Initialising a new cpp docker container");
+        await pullImage(CPP_IMAGE);
+        const runCommand = `echo '${code.replace(/'/g, `'\\"`)}' > main.cpp && g++ main.cpp -o main && echo '${inputTestCase.replace(/'/g, `'\\"`)}' | ./main`;
         console.log(runCommand);
-        const javaDockerContainer = await createContainer(JAVA_IMAGE, [
+        const cppDockerContainer = await createContainer(CPP_IMAGE, [
             '/bin/sh', 
             '-c',
             runCommand
@@ -27,11 +23,11 @@ class JavaExecutor implements CodeExecutorStrategy {
 
 
         // starting / booting the corresponding docker container
-        await javaDockerContainer.start();
+        await cppDockerContainer.start();
 
         console.log("Started the docker container");
 
-        const loggerStream = await javaDockerContainer.logs({
+        const loggerStream = await cppDockerContainer.logs({
             stdout: true,
             stderr: true,
             timestamps: false,
@@ -49,10 +45,9 @@ class JavaExecutor implements CodeExecutorStrategy {
         } catch (error) {
             return {output: error as string, status: "ERROR"}
         } finally {
-            await javaDockerContainer.remove();
+            await cppDockerContainer.remove(); // remove the container when done with it
         }
     }
 }
-  
 
-export default JavaExecutor;
+export default CppExecutor;

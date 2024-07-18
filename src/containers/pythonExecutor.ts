@@ -4,9 +4,8 @@
 import CodeExecutorStrategy, { ExecutionResponse } from '../types/CodeExecutorStrategy';
 import { PYTHON_IMAGE } from '../utils/constants';
 import createContainer from './containerFactory';
-import decodeDockerStream from './dockerHelper';
 import pullImage from './pullImage';
-
+import fetchDecodedStream from '../utils/decodedStreamFetcher';
 
 class PythonExecutor implements CodeExecutorStrategy {
 
@@ -46,7 +45,7 @@ class PythonExecutor implements CodeExecutorStrategy {
         });
 
         try {
-            const codeResponse : string = await this.fetchDecodedStream(loggerStream, rawLogBuffer);
+            const codeResponse : string = await fetchDecodedStream(loggerStream, rawLogBuffer);
             return {output: codeResponse, status: "COMPLETED"};
         } catch (error) {
             return {output: error as string, status: "ERROR"}
@@ -54,25 +53,7 @@ class PythonExecutor implements CodeExecutorStrategy {
             await pythonDockerContainer.remove();
 
         }
-    }
-
-    fetchDecodedStream(loggerStream: NodeJS.ReadableStream, rawLogBuffer: Buffer[]) : Promise<string> {
-        return new Promise((res, rej) => {
-            loggerStream.on('end', () => {
-                console.log(rawLogBuffer);
-                const completeBuffer = Buffer.concat(rawLogBuffer);
-                const decodedStream = decodeDockerStream(completeBuffer);
-                console.log(decodedStream);
-                console.log(decodedStream.stdout);
-                if(decodedStream.stderr) {
-                    rej(decodedStream.stderr);
-                } else {
-                    res(decodedStream.stdout);
-                }
-            });
-        })
-    }
-    
+    }    
 }
 
 export default PythonExecutor;
