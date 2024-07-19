@@ -1,39 +1,22 @@
-import { NextFunction, Request, Response } from "express";
-import { ZodSchema } from "zod";
+import { NextFunction, Request, Response } from 'express';
+import { ZodSchema } from 'zod';
 
-import { AddEvaluationDto } from "../dtos/AddEvaluation";
-import { CreateSubmissionDto } from "../dtos/CreateSubmissionDto";
-
-export const validateCreateSubmissionDto = (schema: ZodSchema<CreateSubmissionDto>) => (req: Request, res: Response, next: NextFunction) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const validate = (schema: ZodSchema<any>) => (req: Request, res: Response, next: NextFunction) => {
     try {
         schema.parse({
             ...req.body
         });
+
         next();
+
     } catch (error) {
-        console.error(`Error in validating Submission: ${error}`);
-        res.status(500).json({
+        console.log(error);
+        return res.status(400).json({
             success: false,
-            error: error,
-            message: 'Something went Wrong in Validating submission',
-            data: {}
+            message: 'Invalid request params received',
+            data: {},
+            error: error 
         });
     }
 };
-
-export const validateAddEvaluationDto = (schema: ZodSchema<AddEvaluationDto>) => (req: Request, res: Response, next: NextFunction) => {
-    try {
-        schema.parse({
-            ...req.body
-        });
-        next();
-    } catch (error) {
-        console.error(`Error in validating Evaluation: ${error}`);
-        res.status(500).json({
-            success: false,
-            error: error,
-            message: 'Something went Wrong in Validating Evaluation',
-            data: {}
-        });
-    }
-};      
