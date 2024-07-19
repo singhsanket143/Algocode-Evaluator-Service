@@ -3,6 +3,7 @@ export const JAVA_IMAGE = "openjdk:11-jdk-slim"; // docker pull openjdk:11-jdk-s
 export const CPP_IMAGE = "gcc:latest"; // docker pull gcc:latest
 
 export const submission_queue = "SubmissionQueue";
+export const evaluation_queue = "EvaluationQueue";
 
 // This will represent the header size of docker stream
 // docker stream header will contain data about type of stream i.e. stdout/stderr
