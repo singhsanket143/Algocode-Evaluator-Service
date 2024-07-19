@@ -26,7 +26,7 @@ export default class SubmissionJob implements IJob {
             console.log(strategy);
             if(strategy != null) {
                 const response : ExecutionResponse = await strategy.execute(code, inputTestCase, outputTestCase);
-                if(response.status === "COMPLETED") {
+                if(response.status === "SUCCESS") {
                     console.log("Code executed successfully");
                     console.log(response);
                 } else {

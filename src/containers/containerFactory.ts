@@ -10,6 +10,9 @@ async function createContainer(imageName: string, cmdExecutable: string[]) {
         AttachStdout: true, // to enable output streams
         AttachStderr: true, // to enable error streams
         Tty: false,
+        HostConfig: {
+            Memory: 1024 * 1024 * 1024, // 2GB
+        },
         OpenStdin: true // keep the input stream open even no interaction is there
     });
 
